@@ -412,6 +412,11 @@
         .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-dark); margin-bottom: 6px; }
         .form-control { width: 100%; padding: 12px; border: 1px solid #DDD; border-radius: 8px; font-size: 0.9rem; font-family: inherit; }
         textarea.form-control { resize: vertical; }
+        .fulfillment-options { border: 0; margin: 20px 0; }
+        .fulfillment-options legend { font-weight: 600; margin-bottom: 10px; }
+        .fulfillment-option { display: flex; align-items: center; gap: 10px; padding: 14px; margin-bottom: 10px; border: 1px solid #DDD; border-radius: 8px; cursor: pointer; }
+        .fulfillment-option input { accent-color: var(--green-main); }
+        #deliveryAddressFields { border: 0; padding: 0; margin: 0; }
 
         .cart-item {
             display: flex;
@@ -887,7 +892,7 @@
                 <!-- ETAPA 1: Dados Pessoais -->
                 <div id="checkoutStep1">
                     <h4 class="step-header">1. Seus Dados</h4>
-                    <p class="step-indicator">Passo 1 de 2</p>
+                    <p class="step-indicator">Passo 1 de 3</p>
 
                     <div class="form-group"><label>Seu Nome *</label><input type="text" id="custName" class="form-control" required placeholder="Quem está comprando"></div>
                     <div class="form-group"><label>Seu Telefone *</label><input type="text" id="custPhone" class="form-control" required placeholder="(27) 99999-9999"></div>
@@ -898,19 +903,42 @@
                     </button>
                 </div>
 
-                <!-- ETAPA 2: Entrega e Pagamento -->
+                <!-- ETAPA 2: Forma de recebimento -->
                 <div id="checkoutStep2" style="display: none;">
-                    <h4 class="step-header">2. Entrega e Pagamento</h4>
-                    <p class="step-indicator">Passo 2 de 2</p>
+                    <h4 class="step-header">2. Como deseja receber?</h4>
+                    <p class="step-indicator">Passo 2 de 3</p>
 
-                    <div class="form-group"><label for="deliveryDate">Data Desejada de Entrega *</label><input type="date" id="deliveryDate" class="form-control" required></div>
-                    <div class="form-group"><label for="deliveryTime">Horário de Entrega *</label><input type="time" id="deliveryTime" class="form-control" required></div>
+                    <fieldset class="fulfillment-options">
+                        <legend>Escolha uma opção *</legend>
+                        <label class="fulfillment-option"><input type="radio" name="fulfillmentType" value="pickup" required> Retirar na loja</label>
+                        <label class="fulfillment-option"><input type="radio" name="fulfillmentType" value="delivery" required> Receber por entrega</label>
+                    </fieldset>
+
+                    <div style="display: flex; gap: 10px;">
+                        <button type="button" class="btn-buy" style="width: 35%; background-color: var(--white); color: var(--green-dark); border: 1px solid #ddd;" onclick="prevStep()">
+                            <i class="fa-solid fa-arrow-left"></i> Voltar
+                        </button>
+                        <button type="button" class="btn-buy" style="width: 65%;" onclick="continueToFulfillment()">
+                            Continuar <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ETAPA 3: Agendamento, entrega e pagamento -->
+                <div id="checkoutStep3" style="display: none;">
+                    <h4 class="step-header">3. Data e Pagamento</h4>
+                    <p class="step-indicator">Passo 3 de 3</p>
+
+                    <div class="form-group"><label for="deliveryDate" id="scheduleDateLabel">Data Desejada de Entrega *</label><input type="date" id="deliveryDate" class="form-control" required></div>
+                    <div class="form-group"><label for="deliveryTime" id="scheduleTimeLabel">Horário *</label><input type="time" id="deliveryTime" class="form-control" required></div>
                     
-                    <div class="form-group"><label>Cidade *</label><input type="text" id="deliveryCity" class="form-control" required value="Vitória"></div>
-                    <div class="form-group"><label>Bairro *</label><input type="text" id="deliveryNeighborhood" class="form-control" required placeholder="Ex: Santa Lúcia"></div>
-                    <div class="form-group"><label>Endereço Completo (Rua, Número) *</label><input type="text" id="deliveryAddress" class="form-control" required placeholder="Rua das Flores, 123"></div>
-                    <div class="form-group"><label>Complemento (Opcional)</label><input type="text" id="deliveryComplement" class="form-control" placeholder="Apto, Bloco, Casa 2..."></div>
-                    <div class="form-group"><label>Ponto de Referência *</label><input type="text" id="deliveryReference" class="form-control" required placeholder="Próximo a, em frente a..."></div>
+                    <fieldset id="deliveryAddressFields">
+                        <div class="form-group"><label for="deliveryCity">Cidade *</label><input type="text" id="deliveryCity" class="form-control" required value="Vitória"></div>
+                        <div class="form-group"><label for="deliveryNeighborhood">Bairro *</label><input type="text" id="deliveryNeighborhood" class="form-control" required placeholder="Ex: Santa Lúcia"></div>
+                        <div class="form-group"><label for="deliveryAddress">Endereço Completo (Rua, Número) *</label><input type="text" id="deliveryAddress" class="form-control" required placeholder="Rua das Flores, 123"></div>
+                        <div class="form-group"><label for="deliveryComplement">Complemento (Opcional)</label><input type="text" id="deliveryComplement" class="form-control" placeholder="Apto, Bloco, Casa 2..."></div>
+                        <div class="form-group"><label for="deliveryReference">Ponto de Referência *</label><input type="text" id="deliveryReference" class="form-control" required placeholder="Próximo a, em frente a..."></div>
+                    </fieldset>
                     
                     <div class="form-group"><label>Mensagem para o Cartão (Opcional)</label><textarea id="cardMessage" class="form-control" rows="3" placeholder="Escreva aqui a sua mensagem especial..."></textarea></div>
 
@@ -934,7 +962,7 @@
                     </div>
 
                     <div style="display: flex; gap: 10px;">
-                        <button type="button" class="btn-buy" style="width: 35%; background-color: var(--white); color: var(--green-dark); border: 1px solid #ddd;" onclick="prevStep()">
+                        <button type="button" class="btn-buy" style="width: 35%; background-color: var(--white); color: var(--green-dark); border: 1px solid #ddd;" onclick="backToFulfillmentChoice()">
                             <i class="fa-solid fa-arrow-left"></i> Voltar
                         </button>
                         <button type="submit" class="btn-whatsapp" style="margin-top: 0; width: 65%;">
@@ -1020,6 +1048,10 @@
             closeCartModal();
             document.getElementById('checkoutStep1').style.display = 'block';
             document.getElementById('checkoutStep2').style.display = 'none';
+            document.getElementById('checkoutStep3').style.display = 'none';
+            document.querySelectorAll('input[name="fulfillmentType"]').forEach(option => {
+                option.checked = false;
+            });
             document.getElementById('checkoutModal').classList.add('active');
         }
 
@@ -1042,6 +1074,31 @@
         function prevStep() {
             document.getElementById('checkoutStep2').style.display = 'none';
             document.getElementById('checkoutStep1').style.display = 'block';
+        }
+
+        function continueToFulfillment() {
+            const selectedOption = document.querySelector('input[name="fulfillmentType"]:checked');
+            if (!selectedOption) {
+                document.querySelector('input[name="fulfillmentType"]').reportValidity();
+                return;
+            }
+
+            const isPickup = selectedOption.value === 'pickup';
+            const addressFields = document.getElementById('deliveryAddressFields');
+            addressFields.hidden = isPickup;
+            addressFields.disabled = isPickup;
+            document.getElementById('scheduleDateLabel').textContent =
+                isPickup ? 'Data Desejada para Retirada *' : 'Data Desejada de Entrega *';
+            document.getElementById('scheduleTimeLabel').textContent =
+                isPickup ? 'Horário de Retirada *' : 'Horário de Entrega *';
+
+            document.getElementById('checkoutStep2').style.display = 'none';
+            document.getElementById('checkoutStep3').style.display = 'block';
+        }
+
+        function backToFulfillmentChoice() {
+            document.getElementById('checkoutStep3').style.display = 'none';
+            document.getElementById('checkoutStep2').style.display = 'block';
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -1069,6 +1126,12 @@
             const cpf = document.getElementById('custCpf').value;
             const date = document.getElementById('deliveryDate').value;
             const time = document.getElementById('deliveryTime').value;
+            const fulfillmentOption = document.querySelector('input[name="fulfillmentType"]:checked');
+            if (!fulfillmentOption) {
+                alert("Escolha se deseja retirar na loja ou receber por entrega.");
+                return;
+            }
+            const fulfillmentType = fulfillmentOption.value;
             const city = document.getElementById('deliveryCity').value;
             const neighborhood = document.getElementById('deliveryNeighborhood').value;
             const address = document.getElementById('deliveryAddress').value;
@@ -1095,15 +1158,20 @@
             text += `Telefone: ${phone}\n`;
             text += `CPF: ${cpf}\n\n`;
             
-            text += `*📍 DADOS DE ENTREGA*\n`;
-            text += `Data: ${formattedDate} às ${time}\n`;
-            text += `Cidade: ${city}\n`;
-            text += `Bairro: ${neighborhood}\n`;
-            text += `Endereço: ${address}\n`;
-            if (complement.trim() !== "") {
-                text += `Complemento: ${complement}\n`;
+            if (fulfillmentType === 'pickup') {
+                text += `*📦 RETIRADA NA LOJA*\n`;
+                text += `Data para retirada: ${formattedDate} às ${time}\n\n`;
+            } else {
+                text += `*📍 DADOS DE ENTREGA*\n`;
+                text += `Data: ${formattedDate} às ${time}\n`;
+                text += `Cidade: ${city}\n`;
+                text += `Bairro: ${neighborhood}\n`;
+                text += `Endereço: ${address}\n`;
+                if (complement.trim() !== "") {
+                    text += `Complemento: ${complement}\n`;
+                }
+                text += `Ponto de Referência: ${reference}\n\n`;
             }
-            text += `Ponto de Referência: ${reference}\n\n`;
             
             if (cardMessage.trim() !== "") {
                 text += `*💌 MENSAGEM DO CARTÃO*\n"${cardMessage}"\n\n`;
