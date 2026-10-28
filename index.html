@@ -903,8 +903,8 @@
                     <h4 class="step-header">2. Entrega e Pagamento</h4>
                     <p class="step-indicator">Passo 2 de 2</p>
 
-                    <div class="form-group"><label>Data Desejada de Entrega *</label><input type="date" id="deliveryDate" class="form-control" required></div>
-                    <div class="form-group"><label>Horário de Entrega *</label><input type="time" id="deliveryTime" class="form-control" required></div>
+                    <div class="form-group"><label for="deliveryDate">Data Desejada de Entrega *</label><input type="date" id="deliveryDate" class="form-control" required></div>
+                    <div class="form-group"><label for="deliveryTime">Horário de Entrega *</label><input type="time" id="deliveryTime" class="form-control" required></div>
                     
                     <div class="form-group"><label>Cidade *</label><input type="text" id="deliveryCity" class="form-control" required value="Vitória"></div>
                     <div class="form-group"><label>Bairro *</label><input type="text" id="deliveryNeighborhood" class="form-control" required placeholder="Ex: Santa Lúcia"></div>
@@ -1050,6 +1050,15 @@
 
             const todayDateString = new Date().toISOString().split('T')[0];
             document.getElementById('deliveryDate').setAttribute('min', todayDateString);
+
+            ['deliveryDate', 'deliveryTime'].forEach(id => {
+                const field = document.getElementById(id);
+                field.addEventListener('click', () => {
+                    if (typeof field.showPicker === 'function') {
+                        field.showPicker();
+                    }
+                });
+            });
         });
 
         function sendWhatsAppOrder(e) {
